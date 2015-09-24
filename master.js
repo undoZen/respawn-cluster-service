@@ -1,4 +1,3 @@
-#!/usr/bin/env node
 'use strict';
 var execSync = require('child_process').execSync
 var path = require('path');
@@ -47,4 +46,4 @@ cpus.forEach(function (__, i) {
     service.workers.push(m);
 });
 
-fs.writeFileSync(path.join(process.env.APP_ROOT, 'running-service.json'), JSON.stringify(service, null, '  '), 'utf-8');
+fs.writeFileSync(path.join(appRoot, 'running-service.json'), JSON.stringify(service, null, '  '), 'utf-8');
