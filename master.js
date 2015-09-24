@@ -1,0 +1,50 @@
+#!/usr/bin/env node
+'use strict';
+var execSync = require('child_process').execSync
+var path = require('path');
+var fs = require('fs');
+var cpus = require('os').cpus();
+var respawn = require('respawn-cluster');
+var xtend = require('xtend');
+var proagent = require('promisingagent');
+var log = require('bunyan-hub-logger')({app: 'web', name: 'server'});
+var appRoot = process.env.APP_ROOT || process.cwd();
+var port = +(process.env.PORT || '8000');
+var env = {
+    NODE_ENV: 'production',
+    cwd: appRoot,
+}
+if ((process.env.HOSTNAME || '').match(/UAT$/)) {
+    env.NODE_APP_INSTANCE = 'uat';
+}
+env.PPID = process.pid;
+var service = {
+    started: Date.now(),
+    pid: process.pid,
+    port: port,
+    workers: [],
+};
+function getCurrentRev() {
+    return execSync('git rev-parse HEAD').toString('utf-8').trim();
+}
+var currentRev;
+cpus.forEach(function (__, i) {
+    var m = respawn([process.execPath, path.join(appRoot, 'index.js')], {
+        mode: 'cluster',
+        cwd: env.cwd,
+        env: xtend(process.env, env, {
+                 PORT: port,
+                 RESTART_DELAY: i * (4000 / cpus.length),
+             }),
+    });
+    m.on('spawn', function () {
+        log.info('web instance on port %d spawned', port);
+    });
+    m.on('start', log.info.bind(log, 'web instance on port %d started', port));
+    m.on('exit', log.info.bind(log, 'web instance on port %d exited', port));
+    currentRev = getCurrentRev();
+    m.start();
+    service.workers.push(m);
+});
+
+fs.writeFileSync(path.join(process.env.APP_ROOT, 'running-service.json'), JSON.stringify(service, null, '  '), 'utf-8');
