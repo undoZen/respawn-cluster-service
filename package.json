@@ -26,9 +26,11 @@
   "homepage": "http://gitlab.creditcloud.com/ccfe/ds-service",
   "dependencies": {
     "bunyan-hub-logger": "*",
+    "chokidar": "^1.0.5",
     "co": "^4",
     "promisingagent": "^4.2.0",
     "respawn-cluster": "^2.1.2",
+    "seaport": "^2.0.9",
     "xtend": "^4.0.0"
   }
 }
