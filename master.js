@@ -19,6 +19,7 @@ var clusterWorkers = Number(process.env.CLUSTER_WORKERS);
 if (!(clusterWorkers > 0)) {
     clusterWorkers = env.NODE_APP_INSTANCE === 'uat' ? 1 : require('os').cpus().length;
 }
+var entryScriptPath = process.env.ENTRY || 'index.js';
 
 env.PPID = process.pid;
 var service = {
@@ -32,7 +33,7 @@ function getCurrentRev() {
 }
 var currentRev;
 for (var i = 0; i < clusterWorkers; i++) {
-    var m = respawn([process.execPath, path.join(appRoot, 'index.js')], {
+    var m = respawn([process.execPath, path.join(appRoot, entryScriptPath)], {
         mode: 'cluster',
         cwd: env.cwd,
         env: xtend(process.env, env, {
