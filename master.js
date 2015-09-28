@@ -37,7 +37,7 @@ for (var i = 0; i < clusterWorkers; i++) {
         cwd: env.cwd,
         env: xtend(process.env, env, {
                  PORT: port,
-                 RESTART_DELAY: 5000 + i * (4000 / cpus.length),
+                 RESTART_DELAY: i * (4000 / cpus.length),
              }),
     });
     m.on('spawn', function () {
