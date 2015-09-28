@@ -2,7 +2,6 @@
 var execSync = require('child_process').execSync
 var path = require('path');
 var fs = require('fs');
-var cpus = require('os').cpus();
 var respawn = require('respawn-cluster');
 var xtend = require('xtend');
 var proagent = require('promisingagent');
@@ -16,6 +15,11 @@ var env = {
 if ((process.env.HOSTNAME || '').match(/UAT$/)) {
     env.NODE_APP_INSTANCE = 'uat';
 }
+var clusterWorkers = Number(process.env.CLUSTER_WORKERS);
+if (!(clusterWorkers > 0)) {
+    clusterWorkers = env.NODE_APP_INSTANCE === 'uat' ? 1 : require('os').cpus().length;
+}
+
 env.PPID = process.pid;
 var service = {
     started: Date.now(),
@@ -27,7 +31,7 @@ function getCurrentRev() {
     return execSync('git rev-parse HEAD').toString('utf-8').trim();
 }
 var currentRev;
-cpus.forEach(function (__, i) {
+for (var i = 0; i < clusterWorkers; i++) {
     var m = respawn([process.execPath, path.join(appRoot, 'index.js')], {
         mode: 'cluster',
         cwd: env.cwd,
@@ -44,6 +48,6 @@ cpus.forEach(function (__, i) {
     currentRev = getCurrentRev();
     m.start();
     service.workers.push(m);
-});
+}
 
 fs.writeFileSync(path.join(appRoot, 'running-service.json'), JSON.stringify(service, null, '  '), 'utf-8');
