@@ -5,7 +5,8 @@ var fs = require('fs');
 var respawn = require('respawn-cluster');
 var xtend = require('xtend');
 var proagent = require('promisingagent');
-var log = require('bunyan-hub-logger')({app: 'web', name: 'server'});
+var appName = process.env.SERVICE_APP_NAME || 'web';
+var log = require('bunyan-hub-logger')({app: appName, name: 'server'});
 var appRoot = process.env.APP_ROOT || process.cwd();
 var port = +(process.env.PORT || '8000');
 var env = {
@@ -42,10 +43,10 @@ for (var i = 0; i < clusterWorkers; i++) {
              }),
     });
     m.on('spawn', function () {
-        log.info('web instance on port %d spawned', port);
+        log.info(appName + ' instance on port %d spawned', port);
     });
-    m.on('start', log.info.bind(log, 'web instance on port %d started', port));
-    m.on('exit', log.info.bind(log, 'web instance on port %d exited', port));
+    m.on('start', log.info.bind(log, appName + ' instance on port %d started', port));
+    m.on('exit', log.info.bind(log, appName + ' instance on port %d exited', port));
     currentRev = getCurrentRev();
     m.start();
     service.workers.push(m);

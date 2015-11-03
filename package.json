@@ -1,14 +1,15 @@
 {
-  "name": "@ds/service",
-  "version": "1.1.5",
-  "description": "CreditCloud DS service",
+  "name": "respawn-cluster-service",
+  "version": "0.0.0",
+  "description": "service bin using respawn-cluster",
   "files": [
     "index.js",
     "master.js",
     "service.js"
   ],
   "bin": {
-    "ds-service": "service.js"
+    "ds-service": "service.js",
+    "rc-service": "service.js"
   },
   "main": "index.js",
   "scripts": {
@@ -16,20 +17,20 @@
   },
   "repository": {
     "type": "git",
-    "url": "ssh://git@gitlab.creditcloud.com:10022/ccfe/ds-service.git"
+    "url": "git@github.com:undoZen/respawn-cluster-service.git"
   },
-  "author": "CCFE",
-  "license": "UNLICENSED",
+  "author": "undoZen <opensource@undozen.com>",
+  "license": "MIT",
   "bugs": {
-    "url": "http://gitlab.creditcloud.com/ccfe/ds-service/issues"
+    "url": "https://github.com/undoZen/respawn-cluster-service/issues"
   },
-  "homepage": "http://gitlab.creditcloud.com/ccfe/ds-service",
+  "homepage": "https://github.com/undoZen/respawn-cluster-service",
   "dependencies": {
     "bunyan-hub-logger": "*",
     "co": "^4",
-    "promisingagent": "^4.2.0",
-    "respawn-cluster": "^2.1.2",
-    "seaport": "^2.0.9",
-    "xtend": "^4.0.0"
+    "promisingagent": "^4",
+    "respawn-cluster": "^2",
+    "seaport": "^2",
+    "xtend": "^4"
   }
 }
