@@ -29,10 +29,6 @@ var service = {
     port: port,
     workers: [],
 };
-function getCurrentRev() {
-    return execSync('git rev-parse HEAD').toString('utf-8').trim();
-}
-var currentRev;
 for (var i = 0; i < clusterWorkers; i++) {
     var m = respawn([process.execPath, path.join(appRoot, entryScriptPath)], {
         mode: 'cluster',
@@ -47,7 +43,6 @@ for (var i = 0; i < clusterWorkers; i++) {
     });
     m.on('start', log.info.bind(log, appName + ' instance on port %d started', port));
     m.on('exit', log.info.bind(log, appName + ' instance on port %d exited', port));
-    currentRev = getCurrentRev();
     m.start();
     service.workers.push(m);
 }
