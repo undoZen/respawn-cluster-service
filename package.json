@@ -1,6 +1,6 @@
 {
   "name": "respawn-cluster-service",
-  "version": "1.0.1",
+  "version": "1.1.0",
   "description": "service bin using respawn-cluster",
   "files": [
     "index.js",
