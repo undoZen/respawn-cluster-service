@@ -64,7 +64,9 @@ if (buildResult.error) {
 console.log(' - build done - ');
 */
 
-if (service) {
+if (process.argv.indexOf('-f') > -1) {
+    require('./master');
+} else if (service) {
     console.log(' - service seems to be running, now restarting...');
     fs.writeFileSync(path.join(appRoot, 'touch_to_restart.js'), new Buffer([]));
 } else {
