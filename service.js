@@ -78,7 +78,7 @@ if (process.argv.indexOf('-f') > -1) {
         } else {
             start();
         }
-    }
+    });
 } else {
     start();
 }
