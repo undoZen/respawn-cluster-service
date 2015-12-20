@@ -2,6 +2,7 @@
 'use strict';
 var path = require('path');
 var fs = require('fs');
+var ps = require('ps-node');
 var spawn = require('child_process').spawn;
 var spawnSync = require('child_process').spawnSync;
 var execSync = require('child_process').execSync;
@@ -67,9 +68,21 @@ console.log(' - build done - ');
 if (process.argv.indexOf('-f') > -1) {
     require('./master');
 } else if (service) {
-    console.log(' - service seems to be running, now restarting...');
-    fs.writeFileSync(path.join(appRoot, 'touch_to_restart.js'), new Buffer([]));
+    ps.lookup({pid: service.pid}, function (err, results) {
+        if (err) {
+            throw err;
+        }
+        if (results[0]) {
+            console.log(' - service seems to be running, now restarting...');
+            fs.writeFileSync(path.join(appRoot, 'touch_to_restart.js'), new Buffer([]));
+        } else {
+            start();
+        }
+    }
 } else {
+    start();
+}
+function start() {
     console.log(' - starting web server...');
     spawn(process.execPath, [path.join(__dirname, 'master.js')], {
         cwd: appRoot,
