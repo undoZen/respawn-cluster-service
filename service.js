@@ -68,17 +68,12 @@ console.log(' - build done - ');
 if (process.argv.indexOf('-f') > -1) {
     require('./master');
 } else if (service) {
-    ps.lookup({pid: service.pid}, function (err, results) {
-        if (err) {
-            throw err;
-        }
-        if (results[0]) {
-            console.log(' - service seems to be running, now restarting...');
-            fs.writeFileSync(path.join(appRoot, 'touch_to_restart.js'), new Buffer([]));
-        } else {
-            start();
-        }
-    });
+    if (fs.existsSync('/proc/'+service.pid)) {
+        console.log(' - service seems to be running, now restarting...');
+        fs.writeFileSync(path.join(appRoot, 'touch_to_restart.js'), new Buffer([]));
+    } else {
+        start();
+    }
 } else {
     start();
 }

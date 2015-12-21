@@ -29,7 +29,6 @@
     "bunyan-hub-logger": "*",
     "co": "^4",
     "promisingagent": "^4",
-    "ps-node": "0.0.5",
     "respawn-cluster": "^2",
     "seaport": "^2",
     "xtend": "^4"
