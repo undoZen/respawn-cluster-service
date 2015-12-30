@@ -5,6 +5,8 @@ var fs = require('fs');
 var spawn = require('child_process').spawn;
 var spawnSync = require('child_process').spawnSync;
 var execSync = require('child_process').execSync;
+var unary = require('fn-unary');
+
 var appRoot = process.env.APP_ROOT || process.cwd();
 var xtend = require('xtend');
 var cwds = appRoot.replace(/^\/|\/$/g, '').split('/').reverse();
@@ -69,7 +71,8 @@ if (process.argv.indexOf('-f') > -1) {
 } else if (service) {
     if (fs.existsSync('/proc/'+service.pid)) {
         console.log(' - service seems to be running, now restarting...');
-        fs.writeFileSync(path.join(appRoot, 'touch_to_restart.js'), new Buffer([]));
+        var pids = execSync('pgrep -P '+service.pid).toString().trim().split(/\s+/g);
+        pids.forEach(unary(process.kill))
     } else {
         start();
     }
